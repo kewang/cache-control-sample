@@ -1,21 +1,16 @@
 package tw.kewang;
 
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 import java.security.SecureRandom;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-public class App {
+public class Cache2 {
     public static void main(String[] args) {
-        LoadingCache<Integer, String> cache = CacheBuilder.newBuilder().recordStats().maximumSize(1000).build(new CacheLoader<Integer, String>() {
-            @Override
-            public String load(Integer integer) throws Exception {
-                return "string" + integer;
-            }
-        });
+        Cache<Integer, String> cache = CacheBuilder.newBuilder().recordStats().maximumSize(1000).build();
 
         SecureRandom secureRandom = new SecureRandom();
 
@@ -61,11 +56,18 @@ public class App {
         System.exit(0);
     }
 
-    private static void setCache(LoadingCache<Integer, String> cache, Scanner scanner) {
+    private static void setCache(Cache<Integer, String> cache, Scanner scanner) {
         System.out.print("key? ");
 
         try {
-            String value = cache.get(scanner.nextInt());
+            int key = scanner.nextInt();
+
+            String value = cache.get(key, new Callable<String>() {
+                @Override
+                public String call() {
+                    return "string" + key;
+                }
+            });
 
             System.out.println("cache value: " + value);
         } catch (ExecutionException e) {
@@ -73,27 +75,34 @@ public class App {
         }
     }
 
-    private static void invalidateSomeCache(LoadingCache<Integer, String> cache, Scanner scanner) {
+    private static void invalidateSomeCache(Cache<Integer, String> cache, Scanner scanner) {
         System.out.print("key? ");
 
         cache.invalidate(scanner.nextInt());
     }
 
-    private static void invalidateAllCaches(LoadingCache<Integer, String> cache) {
+    private static void invalidateAllCaches(Cache<Integer, String> cache) {
         cache.invalidateAll();
     }
 
-    private static void randomFill(LoadingCache<Integer, String> cache, SecureRandom secureRandom) {
+    private static void randomFill(Cache<Integer, String> cache, SecureRandom secureRandom) {
         for (int i = 0; i < 100; i++) {
             try {
-                cache.get(secureRandom.nextInt(100));
+                int key = secureRandom.nextInt(100);
+
+                cache.get(key, new Callable<String>() {
+                    @Override
+                    public String call() {
+                        return "string" + key;
+                    }
+                });
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static void showStats(LoadingCache<Integer, String> cache) {
+    private static void showStats(Cache<Integer, String> cache) {
         System.out.println(cache.stats().toString());
     }
 }
