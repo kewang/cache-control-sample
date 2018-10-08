@@ -65,11 +65,11 @@ public class Cache2 {
             String value = cache.get(key, new Callable<String>() {
                 @Override
                 public String call() {
-                    return "string" + key;
+                    return "item" + key;
                 }
             });
 
-            System.out.println("cache value: " + value);
+            System.out.println("cache item: " + value);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
@@ -93,7 +93,7 @@ public class Cache2 {
                 cache.get(key, new Callable<String>() {
                     @Override
                     public String call() {
-                        return "string" + key;
+                        return "item" + key;
                     }
                 });
             } catch (ExecutionException e) {

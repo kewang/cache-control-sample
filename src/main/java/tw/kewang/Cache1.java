@@ -13,7 +13,7 @@ public class Cache1 {
         LoadingCache<Integer, String> cache = CacheBuilder.newBuilder().recordStats().maximumSize(1000).build(new CacheLoader<Integer, String>() {
             @Override
             public String load(Integer integer) {
-                return "string" + integer;
+                return "item" + integer;
             }
         });
 
@@ -65,9 +65,11 @@ public class Cache1 {
         System.out.print("key? ");
 
         try {
-            String value = cache.get(scanner.nextInt());
+            int key = scanner.nextInt();
 
-            System.out.println("cache value: " + value);
+            String value = cache.get(key);
+
+            System.out.println("cache item: " + value);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
@@ -86,7 +88,9 @@ public class Cache1 {
     private static void randomFill(LoadingCache<Integer, String> cache, SecureRandom secureRandom) {
         for (int i = 0; i < 100; i++) {
             try {
-                cache.get(secureRandom.nextInt(100));
+                int key = secureRandom.nextInt(100);
+
+                cache.get(key);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
