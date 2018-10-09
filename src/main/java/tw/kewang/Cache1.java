@@ -13,6 +13,18 @@ public class Cache1 {
         LoadingCache<Integer, String> cache = CacheBuilder.newBuilder().recordStats().maximumSize(1000).build(new CacheLoader<Integer, String>() {
             @Override
             public String load(Integer integer) {
+                return fromExpensiveData(integer);
+            }
+
+            private String fromExpensiveData(Integer integer) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println("from expensive data");
+
                 return "item" + integer;
             }
         });

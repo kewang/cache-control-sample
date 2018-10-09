@@ -65,6 +65,18 @@ public class Cache2 {
             String value = cache.get(key, new Callable<String>() {
                 @Override
                 public String call() {
+                    return fromExpensiveData();
+                }
+
+                private String fromExpensiveData() {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println("from expensive data");
+
                     return "item" + key;
                 }
             });
@@ -93,6 +105,18 @@ public class Cache2 {
                 cache.get(key, new Callable<String>() {
                     @Override
                     public String call() {
+                        return fromExpensiveData();
+                    }
+
+                    private String fromExpensiveData() {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        System.out.println("from expensive data");
+
                         return "item" + key;
                     }
                 });
